@@ -368,22 +368,22 @@ class CustomerPortal(CustomerPortal):
             template += "<strong>" + header.field_label + ": </strong>"
             
             if header.field_type == 'many2one':
-                template += "<span>" + str(record[eval("'" + str(header.field_name) + "'")].name) \
+                template += "<span>" + str(record[eval("'" + header.field_name + "'")].name) \
                     if record[eval("'" + str(header.field_name) + "'")].check_access_rights('read', raise_exception=False) else 0 \
                 + "</span>"
             elif header.field_type == 'many2many':
-                m2m_ids = request.env[header.field_model].sudo().search([('id','in',record[eval("'" + str(header.field_name) + "'")].ids)])
+                m2m_ids = request.env[header.field_model].sudo().search([('id','in',record[eval("'" +header.field_name+ "'")].ids)])
                     #if m2m_ids.check_access_rights('read', raise_exception=False) else 0
                 m2m_text = ''
                 for m2m in m2m_ids:
                     m2m_text += m2m.name + ','
                 template += "<span>" + m2m_text[:-1] + "</span>"
             elif header.field_type == 'selection':
-                sel_id = request.env['ir.model.fields.selection'].sudo().search([('field_id','=',header.field_id.id),('value','=',record[eval("'" + str(header.field_name) + "'")])],limit=1)
+                sel_id = request.env['ir.model.fields.selection'].sudo().search([('field_id','=',header.field_id.id),('value','=',record[eval("'" +header.field_name+ "'")])],limit=1)
                 if sel_id:
                     template += "<span>" + str(sel_id.name) + "</span>"
             else:
-                template += "<span>" + str(record[eval("'" + str(header.field_name) + "'")]) + "</span>"
+                template += "<span>" + str(record[eval("'" + header.field_name + "'")]) + "</span>"
                 
             template += "</div>"
             
@@ -393,9 +393,7 @@ class CustomerPortal(CustomerPortal):
         # line items
         counter = 0
         m2m_text = ''
-        #template += "<h1>" + str(record_id.id) + record_id.name + "</h1>"
         
-        #domain = [(service_id.parent_relational_field_id.name, '=', record_id.id)]
         domain = []
         record_liens = False
         if service_id.hr_service_record_line:
